@@ -21,6 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Expanded(
               child: ContentLogin(),
             ),
+            ExpansionTileExample(),
+            SizedBox(height: 16,)
           ],
         ),
       ),
@@ -80,7 +82,7 @@ class ContentLogin extends StatelessWidget {
       children: [
         Image.asset(logo, fit: BoxFit.fill, width: 200, height: 64),
         const SizedBox(height: 84),
-        _buildButton('Log in',  <Color>[Color(0xFFFCFFDF), Color(0xFFF1FE87)], Colors.black),
+        _buildButton('Log in', <Color>[Color(0xFFFCFFDF), Color(0xFFF1FE87)], Colors.black),
         const SizedBox(height: 16),
         _buildButton('Become a client of the bank', <Color>[Color(0x12FFFFFF), Color(0x12FFFFFF)], Colors.white),
       ],
@@ -92,8 +94,104 @@ class ContentLogin extends StatelessWidget {
       height: 40,
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 24),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(40), gradient: LinearGradient(colors: colors, begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(40),
+          gradient: LinearGradient(colors: colors, begin: Alignment.topCenter, end: Alignment.bottomCenter)),
       child: Center(child: Text(buttonTitle, style: TextStyle(color: textColor))),
+    );
+  }
+}
+
+class CurrentLoanWidget extends StatelessWidget {
+  const CurrentLoanWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const ExpansionTileExample();
+  }
+}
+
+class ExpansionTileExample extends StatefulWidget {
+  const ExpansionTileExample({super.key});
+
+  @override
+  State<ExpansionTileExample> createState() => _ExpansionTileExampleState();
+}
+
+class _ExpansionTileExampleState extends State<ExpansionTileExample> {
+  bool _customTileExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(40),
+        color: const Color(0x12FFFFFF),
+      ),
+      child: Column(
+        children: <Widget>[
+          ExpansionTile(
+            title: const Text('CURRENT LOAN', style: TextStyle(color: Colors.white)),
+            // subtitle: const Text('Custom expansion arrow icon', style: TextStyle(color: Colors.white)),
+            trailing: Icon(
+              _customTileExpanded ? Icons.arrow_drop_down_circle : Icons.arrow_drop_down,
+              color: Colors.white,
+            ),
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.black),
+                child: Row(
+                  children: [
+                    /// MARK: Icon
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(color: const Color(0xFFB2D0CE), borderRadius: BorderRadius.circular(12)),
+                      child: const Icon(
+                        Icons.add_chart,
+                        size: 20,
+                      ),
+                    ),
+
+                    /// MARK: Center content
+                    Container(
+                      margin: const EdgeInsets.only(left: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text("Account № 3874825", style: TextStyle(color: Colors.white)),
+                          Text("Expires 12/22/2023", style: TextStyle(color: Color(0xFF79767D))),
+                        ],
+                      ),
+                    ),
+
+                    /// MARK: Right content
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: const [
+                            Text("\$ 78,92", style: TextStyle(color: Colors.white)),
+                            Text("Rate 3.5%", style: TextStyle(color: Color(0xFF79767D))),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            onExpansionChanged: (bool expanded) {
+              setState(() {
+                _customTileExpanded = expanded;
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 }
