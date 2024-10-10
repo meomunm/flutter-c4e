@@ -1,6 +1,10 @@
 import 'package:comic_reader/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+
+import 'dashboard/dashboard_screen.dart';
+import 'login/bloc/login_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,19 +15,33 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context1) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: background,
-        body: Column(
-          children: const [
-            AppBarLogin(),
-            Expanded(
-              child: ContentLogin(),
-            ),
-            ExpansionTileExample(),
-            SizedBox(height: 16,)
-          ],
+        body: BlocBuilder<LoginBloc, LoginState>(
+          builder: (context2, state) {
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: Column(
+                    children: const [
+                      AppBarLogin(),
+                      Expanded(child: ContentLogin()),
+                      ExpansionTileExample(),
+                      SizedBox(
+                        height: 16,
+                      )
+                    ],
+                  ),
+                ),
+                if (state.isLoading)
+                  const Center(
+                    child: SizedBox(width: 60, height: 60, child: CircularProgressIndicator()),
+                  )
+              ],
+            );
+          },
         ),
       ),
     );
@@ -82,9 +100,16 @@ class ContentLogin extends StatelessWidget {
       children: [
         Image.asset(logo, fit: BoxFit.fill, width: 200, height: 64),
         const SizedBox(height: 84),
-        _buildButton('Log in', <Color>[Color(0xFFFCFFDF), Color(0xFFF1FE87)], Colors.black),
+        InkWell(
+            onTap: () {
+              BlocProvider.of<LoginBloc>(context).add(RequestLoginEvent(onFinish: () {
+                Navigator.pushNamed(context, DashBoardScreen.named);
+              }));
+            },
+            child: _buildButton('Log in', <Color>[const Color(0xFFFCFFDF), const Color(0xFFF1FE87)], Colors.black)),
         const SizedBox(height: 16),
-        _buildButton('Become a client of the bank', <Color>[Color(0x12FFFFFF), Color(0x12FFFFFF)], Colors.white),
+        _buildButton(
+            'Become a client of the bank', <Color>[const Color(0x12FFFFFF), const Color(0x12FFFFFF)], Colors.white),
       ],
     );
   }
@@ -148,7 +173,8 @@ class _ExpansionTileExampleState extends State<ExpansionTileExample> {
                     Container(
                       width: 40,
                       height: 40,
-                      decoration: BoxDecoration(color: const Color(0xFFB2D0CE), borderRadius: BorderRadius.circular(12)),
+                      decoration:
+                          BoxDecoration(color: const Color(0xFFB2D0CE), borderRadius: BorderRadius.circular(12)),
                       child: const Icon(
                         Icons.add_chart,
                         size: 20,
